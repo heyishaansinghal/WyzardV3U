@@ -47,20 +47,18 @@ export default function ModalHome() {
       position: "bottom",
     });
     window.location.reload();
-    localStorage.removeItem("configSettings");
     localStorage.removeItem("formInput");
+    localStorage.removeItem("configSettings");
   };
 
   useEffect(() => {
     setIsInputValid(
-      formInput.wpAuth && formInput.openAIKey && formInput.prompt
+      formInput.wpAuth?.length > 0 &&
+        formInput.openAIKey?.length > 0 &&
+        (formInput.prompt?.length > 0 || !formInput.prompt)
     );
   }, [formInput]);
-  const gradientBG = keyframes({
-    "0%": { backgroundPosition: "0% 50%" },
-    "50%": { backgroundPosition: "100% 50%" },
-    "100%": { backgroundPosition: "0% 50%" },
-  });
+
   return (
     <div>
       {!pages ? (
@@ -92,14 +90,15 @@ export default function ModalHome() {
                     <Flex justifyContent={"space-around"}>
                       <VStack alignItems="start" spacing={4}>
                         <Text fontSize="lg" fontWeight="bold">
-                          Domain: {configSettings.domain}
+                          Domain: {configSettings?.domain}
                         </Text>
                         <Text fontSize="lg" fontWeight="bold">
-                          Key: {configSettings.key}
+                          Key: {configSettings?.key}
                         </Text>
+
                         <FormControl isRequired>
                           <FormLabel fontSize="sm">
-                            Word Press Username
+                            WordPress Username:Password
                           </FormLabel>
                           <Input
                             onChange={(e) => {

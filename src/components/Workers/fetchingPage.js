@@ -1,21 +1,20 @@
-let configSettings = JSON.parse(localStorage.getItem("configSettings"));
-
-//If it crashes add a location.reload() here is the right code  ; //
-/*let configSettings = JSON.parse(localStorage.getItem("configSettings")) || {
-  domain: "",
-};
-*/
-
-const baseUrl = `https://${configSettings.domain}/wp-json/wp/v2`;
-
 let fetchedPostsAndPages = [];
 let currentPage = 1;
 
 export async function fetchPostsAndPages() {
-  if (!configSettings.domain) {
+  // Get the latest configSettings from localStorage
+  let configSettings = JSON.parse(localStorage.getItem("configSettings"));
+
+  if (!configSettings || !configSettings.domain) {
     alert("Please Contact Support");
     return [];
   }
+
+  const baseUrl = `https://${configSettings.domain}/wp-json/wp/v2`;
+  return await fetchWithDomainDefined(baseUrl);
+}
+
+async function fetchWithDomainDefined(baseUrl) {
   const postsPromise = fetch(
     `${baseUrl}/posts?_fields=id,title,content&page=${currentPage}&per_page=5`
   );
