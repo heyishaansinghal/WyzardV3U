@@ -15,6 +15,7 @@ import {
   ModalBody,
   ModalFooter,
   ModalCloseButton,
+  keyframes,
   Container,
   useToast,
   IconButton,
@@ -55,7 +56,11 @@ export default function ModalHome() {
       formInput.wpAuth && formInput.openAIKey && formInput.prompt
     );
   }, [formInput]);
-
+  const gradientBG = keyframes({
+    "0%": { backgroundPosition: "0% 50%" },
+    "50%": { backgroundPosition: "100% 50%" },
+    "100%": { backgroundPosition: "0% 50%" },
+  });
   return (
     <div>
       {!pages ? (

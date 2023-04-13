@@ -48,21 +48,9 @@ const EditablePage = ({ postId, username, password, onClose }) => {
       const doc = parser.parseFromString(post.content.rendered, "text/html");
 
       const title = post.title.rendered;
-      const headings = Array.from(
-        doc.querySelectorAll("h1, h2, h3, h4, h5, h6")
+      const postContent = Array.from(
+        doc.querySelectorAll("p, img, video, audio")
       );
-      const postContent = Array.from(doc.querySelectorAll("p, img, iframe"));
-
-      // Process media elements
-      postContent.forEach((el, index) => {
-        if (el.tagName === "IMG" || el.tagName === "IFRAME") {
-          el.style.maxWidth = "100%";
-        } else if (el.tagName === "P") {
-          const wrappedEl = document.createElement("div");
-          wrappedEl.innerHTML = `<grammarly-editor-plugin>${el.outerHTML}</grammarly-editor-plugin>`;
-          postContent[index] = wrappedEl;
-        }
-      });
 
       // Create a new container element and append the desired elements
       const contentContainer = document.createElement("div");
@@ -74,8 +62,25 @@ const EditablePage = ({ postId, username, password, onClose }) => {
       titleElement.style.textAlign = "center";
       titleElement.style.marginBottom = "10px";
 
-      headings.forEach((heading) => contentContainer.appendChild(heading));
-      postContent.forEach((content) => contentContainer.appendChild(content));
+      postContent.forEach((content) => {
+        if (
+          content.tagName === "IMG" ||
+          content.tagName === "VIDEO" ||
+          content.tagName === "AUDIO"
+        ) {
+          const placeholder = document.createElement("p");
+          placeholder.innerHTML =
+            content.tagName === "IMG"
+              ? `Image: ${content.alt}`
+              : `${content.tagName}: ${content.title}`;
+          placeholder.style.textAlign = "center";
+          placeholder.style.fontStyle = "italic";
+          placeholder.style.color = "gray";
+          contentContainer.appendChild(placeholder);
+        } else {
+          contentContainer.appendChild(content);
+        }
+      });
 
       // Apply styles to justify and format text
       contentContainer.querySelectorAll("p").forEach((p) => {
@@ -124,6 +129,12 @@ const EditablePage = ({ postId, username, password, onClose }) => {
           element.addEventListener("contextmenu", (event) =>
             handleContextMenu(event, element.textContent)
           );
+        });
+
+      contentRef.current
+        .querySelectorAll(".media-placeholder")
+        .forEach((element) => {
+          element.contentEditable = "false";
         });
     }
   }, [copiedContent]);
@@ -274,7 +285,6 @@ const EditablePage = ({ postId, username, password, onClose }) => {
                 <Button
                   onClick={() => {
                     onClose();
-                    setAiActive(!aiActive);
                   }}
                   size={buttonSize}
                   _hover={{ bg: buttonHover }}

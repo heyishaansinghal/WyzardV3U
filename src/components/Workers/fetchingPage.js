@@ -1,6 +1,10 @@
-let configSettings = JSON.parse(localStorage.getItem("configSettings")) || {
+let configSettings = JSON.parse(localStorage.getItem("configSettings"));
+
+//If it crashes add a location.reload() here is the right code  ; //
+/*let configSettings = JSON.parse(localStorage.getItem("configSettings")) || {
   domain: "",
 };
+*/
 
 const baseUrl = `https://${configSettings.domain}/wp-json/wp/v2`;
 
