@@ -27,13 +27,26 @@ async function fetchWithDomainDefined(baseUrl) {
     pagesPromise,
   ]);
 
-  if (!postsResponse.ok || !pagesResponse.ok) {
-    console.error("Error fetching posts or pages.");
-    return;
-  }
+  const checkInvalidPageNumber = (errorData) => {
+    if (errorData && errorData.code === "rest_post_invalid_page_number") {
+      alert("There are no more pages available.");
+      return true;
+    }
+    return false;
+  };
 
   const posts = await postsResponse.json();
   const pages = await pagesResponse.json();
+
+  if (
+    checkInvalidPageNumber(posts) ||
+    checkInvalidPageNumber(pages) ||
+    !postsResponse.ok ||
+    !pagesResponse.ok
+  ) {
+    console.error("Error fetching posts or pages.");
+    return;
+  }
 
   const combined = [...posts, ...pages].map((item) => ({
     id: item.id,
