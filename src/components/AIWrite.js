@@ -14,7 +14,13 @@ import {
   ModalContent,
   useDisclosure,
 } from "@chakra-ui/react";
-export default function AIWrite({ aiActive, setAiActive, textContent }) {
+export default function AIWrite({
+  aiActive,
+  utilEdit,
+  setAiActive,
+  textContent,
+  setutilEdit,
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true });
   const [aiText, setAiText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -37,8 +43,7 @@ export default function AIWrite({ aiActive, setAiActive, textContent }) {
     const localStorageData = JSON.parse(localStorage.getItem("prompts"));
     const configSettings = JSON.parse(localStorage.getItem("configSettings"));
     const formInput = JSON.parse(localStorage.getItem("formInput"));
-    const promptToUse =
-      "Forget Everything and Summarize this text for SEO And Clarity";
+    const promptToUse = formInput.prompt;
     const apiKey = formInput.openAIKey;
     const maxWordsPerRequest = 3000;
 
@@ -142,6 +147,7 @@ export default function AIWrite({ aiActive, setAiActive, textContent }) {
         <ModalFooter>
           <Button
             onClick={() => {
+              setutilEdit(!utilEdit);
               onClose();
               setAiActive(!aiActive);
               copyToClipboard();

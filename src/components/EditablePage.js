@@ -14,6 +14,7 @@ import {
 import AIWrite from "./AIWrite";
 
 const EditablePage = ({ postId, username, password, onClose }) => {
+  const [utilEdit, setutilEdit] = useState(true);
   const [copiedContent, setCopiedContent] = useState(null);
   const [aiActive, setAiActive] = useState(false);
   const [textContent, setTextContent] = useState("");
@@ -28,6 +29,18 @@ const EditablePage = ({ postId, username, password, onClose }) => {
     x: 0,
     y: 0,
   });
+
+  useEffect(() => {
+    console.log("utilEdit has been updated:", utilEdit);
+    document
+      .querySelectorAll("h1, h2, h3, h4, h5, h6, p")
+      .forEach((element) => {
+        element.contentEditable = "true";
+        element.addEventListener("contextmenu", (event) =>
+          handleContextMenu(event, element.textContent)
+        );
+      });
+  }, [utilEdit]);
 
   const fetchPostContent = async (postId) => {
     try {
@@ -232,6 +245,7 @@ const EditablePage = ({ postId, username, password, onClose }) => {
     <ScaleFade initialScale={0.9} in={true}>
       <Box maxW="container.xl" py={8} mx="auto" px={[4, 6]}>
         {/* Render CustomContextMenu only if position is set */}
+        {console.log(utilEdit)}
         {contextMenuPosition.x !== 0 && <CustomContextMenu />}
         {!aiActive ? (
           isLoading ? (
@@ -298,7 +312,9 @@ const EditablePage = ({ postId, username, password, onClose }) => {
           <div>
             <AIWrite
               setAiActive={setAiActive}
+              setutilEdit={setutilEdit}
               aiActive={aiActive}
+              utilEdit={utilEdit}
               textContent={textContent}
             />
           </div>
