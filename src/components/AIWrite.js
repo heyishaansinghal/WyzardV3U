@@ -36,10 +36,10 @@ export default function AIWrite({ aiActive, setAiActive, textContent }) {
   async function getAIText(userContent) {
     const localStorageData = JSON.parse(localStorage.getItem("prompts"));
     const configSettings = JSON.parse(localStorage.getItem("configSettings"));
-
+    const formInput = JSON.parse(localStorage.getItem("formInput"));
     const promptToUse =
       "Forget Everything and Summarize this text for SEO And Clarity";
-    const apiKey = "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";
+    const apiKey = formInput.openAIKey;
     const maxWordsPerRequest = 3000;
 
     // Split the text into chunks if it exceeds the maximum words per request
